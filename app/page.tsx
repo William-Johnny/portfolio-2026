@@ -12,14 +12,14 @@ export default async function Page() {
 
   return (
     <>
-      <h1>{page.data.title}</h1>
-      <PrismicRichText field={page.data.description}/>
+      <h1>{page?.data.title}</h1>
+      <PrismicRichText field={page?.data.description}/>
       <section>
         <h1>Projet mis en avant : </h1>
-        <h2>{page.data.highlighted_project.data.title}</h2>
-        <PrismicRichText field={page.data.highlighted_project.data.description}/>
+        <h2>{page?.data.highlighted_project.data.title}</h2>
+        <PrismicRichText field={page?.data.highlighted_project.data.description}/>
       </section>
-      <SliceZone slices={page.data.slices} components={components} />
+      <SliceZone slices={page?.data.slices} components={components} />
     </>
   );
 }
