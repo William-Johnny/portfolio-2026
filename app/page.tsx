@@ -5,6 +5,7 @@ import { PrismicRichText, SliceZone } from "@prismicio/react";
 
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
+import { isFilled } from "@prismicio/client";
 
 export default async function Page() {
   const client = createClient();
@@ -14,11 +15,14 @@ export default async function Page() {
     <>
       <h1>{page?.data.title}</h1>
       <PrismicRichText field={page?.data.description}/>
-      <section>
-        <h1>Projet mis en avant : </h1>
-        <h2>{page?.data.highlighted_project.data.title}</h2>
-        <PrismicRichText field={page?.data.highlighted_project.data.description}/>
-      </section>
+      {isFilled.contentRelationship(page?.data.highlighted_project.data) && (
+        <section>
+          <h1>Projet mis en avant : </h1>
+          <h2>{page?.data.highlighted_project.data.title}</h2>
+          <PrismicRichText field={page?.data.highlighted_project.data.description}/>
+        </section> )
+      }
+
       <SliceZone slices={page?.data.slices} components={components} />
     </>
   );
