@@ -8,7 +8,7 @@ import { components } from "@/slices";
 
 export default async function Page() {
   const client = createClient();
-  const page = await client.getSingle("home").catch(() => notFound());
+  const page: any = await client.getSingle("home").catch(() => notFound());
 
   return (
     <>
