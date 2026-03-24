@@ -3,6 +3,7 @@
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Polaroid from './polaroid';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger); // register the hook to avoid React version discrepancies 
 
@@ -18,51 +19,10 @@ export const Anim = () => {
 
   return (
 	<>
-	<div style={{
-				height: '360px',
-			}}></div>
-	<div className='square-list'>
-		<div 
-			className="box" 
-			style={{
-				width: '100px',
-				height: '100px',
-				backgroundColor: 'red'
-			}}
-		></div>
-		<div 
-			className="box" 
-			style={{
-				width: '100px',
-				height: '100px',
-				backgroundColor: 'red'
-			}}
-		></div>
-		<div 
-			className="box" 
-			style={{
-				width: '100px',
-				height: '100px',
-				backgroundColor: 'red'
-			}}
-		></div>
-		<div 
-			className="box" 
-			style={{
-				width: '100px',
-				height: '100px',
-				backgroundColor: 'red'
-			}}
-		></div>
-		<div 
-			className="box" 
-			style={{
-				width: '100px',
-				height: '100px',
-				backgroundColor: 'red'
-			}}
-		></div>
-	</div>
+		<div style={{
+					height: '360px',
+				}}></div>
+		<Polaroid src="/reference.jpg" text="My polaroid" imgAlt="Polaroid"/>
 	</>
   );
 }
