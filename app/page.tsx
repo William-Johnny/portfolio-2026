@@ -10,6 +10,7 @@ import {Anim} from "./components/anim";
 
 export default async function Page() {
   const client = createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const page: any = await client.getSingle("home").catch(() => notFound());
 
   return (
