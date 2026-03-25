@@ -9,57 +9,64 @@ import Polaroid from "../components/polaroid";
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
 const PresPage = () => {
-  function poissonDiskSampling(
-    width: number,
-    height: number,
-    minDist: number,
-    maxPoints = 100,
-  ) {
-    const points: { x: number; y: number }[] = [];
-    const attempts = 30;
-
-    function isFarEnough(x: number, y: number) {
-      return points.every((p) => {
-        const dx = p.x - x;
-        const dy = p.y - y;
-        return Math.sqrt(dx * dx + dy * dy) >= minDist;
-      });
-    }
-
-    while (points.length < maxPoints) {
-      let placed = false;
-
-      for (let i = 0; i < attempts; i++) {
-        const x = Math.random() * width;
-        const y = Math.random() * height;
-
-        if (isFarEnough(x, y)) {
-          points.push({ x, y });
-          placed = true;
-          break;
-        }
-      }
-
-      if (!placed) break;
-    }
-
-    return points;
-  }
-
-  function isInEllipseBand(
+  function isInsideEllipse(
     x: number,
     y: number,
     cx: number,
     cy: number,
     a: number,
     b: number,
-    spread: number,
   ) {
     const dx = x - cx;
     const dy = y - cy;
 
-    const value = (dx * dx) / (a * a) + (dy * dy) / (b * b);
-    return value >= 1 && value <= 1 + spread / 100;
+    return (dx * dx) / (a * a) + (dy * dy) / (b * b) < 1;
+  }
+
+  function generatePositions(
+    count: number,
+    centerX: number,
+    centerY: number,
+    a: number,
+    b: number,
+  ) {
+    const positions: { x: number; y: number }[] = [];
+    const padding = 80;
+
+    function isFarEnough(
+      x: number,
+      y: number,
+      positions: any[],
+      minDist = 200,
+    ) {
+      return positions.every((p) => {
+        const dx = p.x - x;
+        const dy = p.y - y;
+        return Math.sqrt(dx * dx + dy * dy) > minDist;
+      });
+    }
+
+    while (positions.length < count) {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+
+      const inside = isInsideEllipse(
+        x,
+        y,
+        centerX,
+        centerY,
+        a + padding,
+        b + padding,
+      );
+
+      if (!inside && isFarEnough(x, y, positions)) {
+        console.log({ x, y });
+
+        positions.push({ x, y });
+      }
+    }
+
+    return positions;
   }
 
   useEffect(() => {
@@ -67,7 +74,12 @@ const PresPage = () => {
       "polaroid",
     ) as HTMLCollectionOf<HTMLElement>;
 
+    const ele = document.getElementsByClassName(
+      "point",
+    ) as HTMLCollectionOf<HTMLElement>;
+
     const els = Array.from(elements);
+    const points = Array.from(ele);
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -78,20 +90,12 @@ const PresPage = () => {
     const a = 705 / 2;
     const b = 173 / 2;
 
-    const spread = 500;
-    const minDist = 120;
-
-    const samples = poissonDiskSampling(width, height, minDist, 200);
-
-    const validPoints = samples.filter((p) =>
-      isInEllipseBand(p.x, p.y, centerX, centerY, a, b, spread),
-    );
+    const positions = generatePositions(els.length, centerX, centerY, a, b);
 
     els.forEach((el, i) => {
-      const p = validPoints[i % validPoints.length];
-      if (!p) return;
+      const p = positions[i];
 
-      const rotation = gsap.utils.random(-50, 50);
+      const rotation = gsap.utils.random(-45, 45);
 
       gsap.set(el, {
         position: "absolute",
@@ -103,10 +107,32 @@ const PresPage = () => {
       });
     });
 
+    points.forEach((el, i) => {
+      const p = positions[i];
+
+      const rotation = gsap.utils.random(-45, 45);
+
+      gsap.set(el, {
+        position: "absolute",
+        x: p.x,
+        y: p.y,
+        rotation,
+        xPercent: -50,
+        yPercent: -50,
+      });
+    });
+
+    const margin = 25;
+
     Draggable.create(els, {
       type: "x,y",
       inertia: true,
-      bounds: document.querySelector("body"),
+      bounds: {
+        minX: -margin,
+        minY: -margin,
+        maxX: window.innerWidth + margin,
+        maxY: window.innerHeight + margin,
+      },
     });
   }, []);
 
@@ -136,24 +162,126 @@ const PresPage = () => {
         imgAlt="Polaroid"
         className="polaroid"
       />
+      <Polaroid
+        src="/img/hit.png"
+        text="Site JSP de France"
+        imgAlt="Polaroid"
+        className="polaroid"
+      />
+      <Polaroid
+        src="/img/cap.png"
+        text="Hide and seek"
+        imgAlt="Polaroid"
+        className="polaroid"
+      />
+      <Polaroid
+        src="/img/lost.png"
+        text="Pygamon"
+        imgAlt="Polaroid"
+        className="polaroid"
+      />
       <div className="h-full w-full flex justify-center items-center">
         <h1 className="font-bebas text-[200px]">Portfolio</h1>
-        {/* <div
-          className="ellipse-debug"
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            width: "705px",
-            height: "173px",
-            transform: "translate(-50%, -50%)",
-            border: "2px dashed red",
-            borderRadius: "50%",
-            pointerEvents: "none",
-            zIndex: "9999",
-          }}
-        /> */}
       </div>
+      {/* <div
+        className="ellipse-debug"
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          width: "705px",
+          height: "173px",
+          transform: "translate(-50%, -50%)",
+          border: "2px dashed red",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          zIndex: "9999",
+        }}
+      />
+      <div
+        className="point"
+        style={{
+          position: "absolute",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          backgroundColor: "red",
+          zIndex: "9999",
+        }}
+      />
+      <div
+        className="point"
+        style={{
+          position: "absolute",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          backgroundColor: "red",
+          zIndex: "9999",
+        }}
+      />
+      <div
+        className="point"
+        style={{
+          position: "absolute",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          backgroundColor: "red",
+          zIndex: "9999",
+        }}
+      />
+      <div
+        className="point"
+        style={{
+          position: "absolute",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          backgroundColor: "red",
+          zIndex: "9999",
+        }}
+      />
+      <div
+        className="point"
+        style={{
+          position: "absolute",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          backgroundColor: "red",
+          zIndex: "9999",
+        }}
+      />
+      <div
+        className="point"
+        style={{
+          position: "absolute",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          backgroundColor: "red",
+          zIndex: "9999",
+        }}
+      />
+      <div
+        className="point"
+        style={{
+          position: "absolute",
+          width: "10px",
+          height: "10px",
+          borderRadius: "50%",
+          pointerEvents: "none",
+          backgroundColor: "red",
+          zIndex: "9999",
+        }}
+      /> */}
     </>
   );
 };
