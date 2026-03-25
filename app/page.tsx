@@ -6,27 +6,36 @@ import { PrismicRichText, SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { isFilled } from "@prismicio/client";
-import {Anim} from "./components/anim";
+import { Anim } from "./components/anim";
+import PresPage from "./pages/presPage";
+
+// export default async function Page() {
+//   const client = createClient();
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   const page: any = await client.getSingle("home").catch(() => notFound());
+
+//   return (
+//     <>
+//       <h1>{page?.data.title}</h1>
+//       <PrismicRichText field={page?.data.description}/>
+//       <Anim/>
+//       {isFilled.contentRelationship(page?.data.highlighted_project.data) && (
+//         <section>
+//           <h1>Projet mis en avant : </h1>
+//           <h2>{page?.data.highlighted_project.data.title}</h2>
+//           <PrismicRichText field={page?.data.highlighted_project.data.description}/>
+//         </section> )
+//       }
+
+//       <SliceZone slices={page?.data.slices} components={components} />
+//     </>
+//   );
+// }
 
 export default async function Page() {
-  const client = createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const page: any = await client.getSingle("home").catch(() => notFound());
-
   return (
     <>
-      <h1>{page?.data.title}</h1>
-      <PrismicRichText field={page?.data.description}/>
-      <Anim/>
-      {isFilled.contentRelationship(page?.data.highlighted_project.data) && (
-        <section>
-          <h1>Projet mis en avant : </h1>
-          <h2>{page?.data.highlighted_project.data.title}</h2>
-          <PrismicRichText field={page?.data.highlighted_project.data.description}/>
-        </section> )
-      }
-
-      <SliceZone slices={page?.data.slices} components={components} />
+      <PresPage />
     </>
   );
 }
