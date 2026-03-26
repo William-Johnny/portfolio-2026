@@ -6,8 +6,9 @@ import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import Polaroid from "../components/polaroid";
 import { ImageFieldImage } from "@prismicio/client";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(Draggable, InertiaPlugin);
+gsap.registerPlugin(Draggable, InertiaPlugin, ScrollTrigger);
 
 interface PresPageProps {
   imgArray: Array<any>;
@@ -78,6 +79,54 @@ const PresPage: React.FC<PresPageProps> = ({
     return positions;
   }
 
+  function getNearestEdge(el: HTMLElement) {
+    const rect = el.getBoundingClientRect();
+
+    const distances = {
+      left: rect.left,
+      right: window.innerWidth - rect.right,
+      top: rect.top,
+      bottom: window.innerHeight - rect.bottom,
+    };
+
+    const nearest = Object.entries(distances).reduce((a, b) =>
+      a[1] < b[1] ? a : b,
+    )[0];
+
+    return nearest;
+  }
+
+  function moveToEdge(el: HTMLElement) {
+    const edge = getNearestEdge(el);
+
+    const offset = 200; // how far outside screen
+
+    let x = 0;
+    let y = 0;
+
+    switch (edge) {
+      case "left":
+        x = -window.innerWidth / 2 - offset;
+        break;
+      case "right":
+        x = window.innerWidth / 2 + offset;
+        break;
+      case "top":
+        y = -window.innerHeight / 2 - offset;
+        break;
+      case "bottom":
+        y = window.innerHeight / 2 + offset;
+        break;
+    }
+
+    gsap.to(el, {
+      x: `+=${x}`,
+      y: `+=${y}`,
+      duration: 0.8,
+      ease: "power3.out",
+    });
+  }
+
   useEffect(() => {
     const elements = document.getElementsByClassName(
       "polaroid",
@@ -143,6 +192,45 @@ const PresPage: React.FC<PresPageProps> = ({
         maxY: window.innerHeight + margin,
       },
     });
+
+    gsap.to(".home-title", {
+      opacity: 0,
+      y: -50,
+      duration: 1,
+      scrollTrigger: {
+        trigger: ".home-title",
+        markers: true,
+        start: "-=300",
+        end: "bottom top",
+        scrub: true,
+        pin: true,
+      },
+    });
+
+    els.forEach((el) => {
+      const edge = getNearestEdge(el);
+
+      let x = 0;
+      let y = 0;
+
+      const offset = 300;
+
+      if (edge === "left") x = -offset;
+      if (edge === "right") x = offset;
+      if (edge === "top") y = -offset;
+      if (edge === "bottom") y = offset;
+
+      gsap.to(el, {
+        x: `+=${x}`,
+        y: `+=${y}`,
+        scrollTrigger: {
+          trigger: document.body,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    });
   }, []);
 
   return (
@@ -156,10 +244,10 @@ const PresPage: React.FC<PresPageProps> = ({
         />
       ))}
       <div className="min-h-full w-full flex justify-center items-center">
-        <h1 className="font-bebas text-[200px]">Portfolio</h1>
+        <h1 className="home-title font-bebas text-[200px]">Portfolio</h1>
       </div>
-      <div className="min-h-full w-full flex">
-        <div className="pt-11 pl-36">
+      <div className="min-h-full w-full flex mt-[500px]">
+        <div className=".hero-subtitle pt-11 pl-36">
           <h1 className="font-bebas text-8xl">Who am I ?</h1>
           <p className="font-sans text-2xl w-108.75">
             My name is William-John Guenon I’m a student developer at l’Ecole by
