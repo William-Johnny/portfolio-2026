@@ -33,9 +33,20 @@ import PresPage from "./pages/presPage";
 // }
 
 export default async function Page() {
+  const client = createClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const page: any = await client.getSingle("home").catch(() => notFound());
+  const project: any = await client
+    .getSingle("project")
+    .catch(() => notFound());
+
   return (
     <>
-      <PresPage />
+      <PresPage
+        imgArray={project?.data.project}
+        pictureOfMe={page?.data.pictureOfMe}
+        highlightedProjectImg={page?.data.highlightProjectImg}
+      />
     </>
   );
 }

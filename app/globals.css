@@ -6,8 +6,15 @@
 }
 
 @font-face {
-  font-family: 'Bebas Neue';
-  src: url('/fonts/BebasNeue-Regular.ttf') format('truetype');
+  font-family: "Bebas Neue";
+  src: url("/fonts/BebasNeue-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Caveat";
+  src: url("/fonts/Caveat-VariableFont_wght.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -18,6 +25,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-bebas: "Bebas Neue", sans-serif;
+  --font-caveat: "Caveat", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

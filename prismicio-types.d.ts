@@ -111,6 +111,28 @@ interface HomeDocumentData {
   >;
 
   /**
+   * pictureOfMe field in *Home*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: home.pictureOfMe
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  pictureOfMe: prismic.ImageField<never>;
+
+  /**
+   * highlightProjectImg field in *Home*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: home.highlightProjectImg
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  highlightProjectImg: prismic.ImageField<never>;
+
+  /**
    * Slice Zone field in *Home*
    *
    * - **Field Type**: Slice Zone
@@ -165,6 +187,51 @@ interface HomeDocumentData {
 export type HomeDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithoutUID<Simplify<HomeDocumentData>, "home", Lang>;
 
+/**
+ * Item in *Project → project*
+ */
+export interface ProjectDocumentDataProjectItem {
+  /**
+   * Title field in *Project → project*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: project.project[].title
+   * - **Documentation**: https://prismic.io/docs/fields/text
+   */
+  title: prismic.KeyTextField;
+
+  /**
+   * Description field in *Project → project*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: project.project[].description
+   * - **Documentation**: https://prismic.io/docs/fields/rich-text
+   */
+  description: prismic.RichTextField;
+
+  /**
+   * mainImg field in *Project → project*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: project.project[].mainimg
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  mainimg: prismic.ImageField<never>;
+
+  /**
+   * secondaryImg field in *Project → project*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: project.project[].secondaryimg
+   * - **Documentation**: https://prismic.io/docs/fields/image
+   */
+  secondaryimg: prismic.ImageField<never>;
+}
+
 type ProjectDocumentDataSlicesSlice = never;
 
 /**
@@ -192,6 +259,17 @@ interface ProjectDocumentData {
    * - **Documentation**: https://prismic.io/docs/fields/rich-text
    */
   description: prismic.RichTextField;
+
+  /**
+   * project field in *Project*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: project.project[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+   */
+  project: prismic.GroupField<Simplify<ProjectDocumentDataProjectItem>>;
 
   /**
    * Slice Zone field in *Project*
@@ -280,6 +358,7 @@ declare module "@prismicio/client" {
       HomeDocumentDataSlicesSlice,
       ProjectDocument,
       ProjectDocumentData,
+      ProjectDocumentDataProjectItem,
       ProjectDocumentDataSlicesSlice,
       AllDocumentTypes,
     };

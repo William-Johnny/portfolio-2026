@@ -28,6 +28,53 @@
           "multi": "paragraph,strong,em"
         }
       },
+      "project": {
+        "type": "Group",
+        "config": {
+          "label": "project",
+          "repeat": true,
+          "fields": {
+            "title": {
+              "type": "Text",
+              "config": {
+                "label": "Title",
+                "placeholder": ""
+              }
+            },
+            "description": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Description",
+                "placeholder": "",
+                "allowTargetBlank": true,
+                "multi": "paragraph,hyperlink,strong,em"
+              }
+            },
+            "mainimg": {
+              "type": "Image",
+              "config": {
+                "label": "mainImg",
+                "constraint": {
+                  "width": 488,
+                  "height": 538
+                },
+                "thumbnails": []
+              }
+            },
+            "secondaryimg": {
+              "type": "Image",
+              "config": {
+                "label": "secondaryImg",
+                "constraint": {
+                  "width": 174,
+                  "height": 174
+                },
+                "thumbnails": []
+              }
+            }
+          }
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",

@@ -36,6 +36,28 @@
           ]
         }
       },
+      "pictureOfMe": {
+        "type": "Image",
+        "config": {
+          "label": "",
+          "constraint": {
+            "width": 300,
+            "height": 300
+          },
+          "thumbnails": []
+        }
+      },
+      "highlightProjectImg": {
+        "type": "Image",
+        "config": {
+          "label": "",
+          "constraint": {
+            "width": 300,
+            "height": 300
+          },
+          "thumbnails": []
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",

@@ -5,10 +5,21 @@ import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import Polaroid from "../components/polaroid";
+import { ImageFieldImage } from "@prismicio/client";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
-const PresPage = () => {
+interface PresPageProps {
+  imgArray: Array<any>;
+  pictureOfMe: ImageFieldImage;
+  highlightedProjectImg: ImageFieldImage;
+}
+
+const PresPage: React.FC<PresPageProps> = ({
+  imgArray,
+  pictureOfMe,
+  highlightedProjectImg,
+}) => {
   function isInsideEllipse(
     x: number,
     y: number,
@@ -36,7 +47,7 @@ const PresPage = () => {
     function isFarEnough(
       x: number,
       y: number,
-      positions: any[],
+      positions: { x: number; y: number }[],
       minDist = 200,
     ) {
       return positions.every((p) => {
@@ -60,8 +71,6 @@ const PresPage = () => {
       );
 
       if (!inside && isFarEnough(x, y, positions)) {
-        console.log({ x, y });
-
         positions.push({ x, y });
       }
     }
@@ -138,50 +147,44 @@ const PresPage = () => {
 
   return (
     <>
-      <Polaroid
-        src="/reference.jpg"
-        text="ref"
-        imgAlt="ref"
-        className="polaroid"
-      />
-      <Polaroid
-        src="/img/jsp1.png"
-        text="Site JSP de France"
-        imgAlt="Polaroid"
-        className="polaroid"
-      />
-      <Polaroid
-        src="/img/hide_and_seek.png"
-        text="Hide and seek"
-        imgAlt="Polaroid"
-        className="polaroid"
-      />
-      <Polaroid
-        src="/img/py1.png"
-        text="Pygamon"
-        imgAlt="Polaroid"
-        className="polaroid"
-      />
-      <Polaroid
-        src="/img/hit.png"
-        text="Site JSP de France"
-        imgAlt="Polaroid"
-        className="polaroid"
-      />
-      <Polaroid
-        src="/img/cap.png"
-        text="Hide and seek"
-        imgAlt="Polaroid"
-        className="polaroid"
-      />
-      <Polaroid
-        src="/img/lost.png"
-        text="Pygamon"
-        imgAlt="Polaroid"
-        className="polaroid"
-      />
-      <div className="h-full w-full flex justify-center items-center">
+      {imgArray.map((item, index) => (
+        <Polaroid
+          key={index}
+          src={item.mainimg}
+          imgAlt="ref"
+          className="polaroid"
+        />
+      ))}
+      <div className="min-h-full w-full flex justify-center items-center">
         <h1 className="font-bebas text-[200px]">Portfolio</h1>
+      </div>
+      <div className="min-h-full w-full flex">
+        <div className="pt-11 pl-36">
+          <h1 className="font-bebas text-8xl">Who am I ?</h1>
+          <p className="font-sans text-2xl w-108.75">
+            My name is William-John Guenon I’m a student developer at l’Ecole by
+            CCI
+          </p>
+          <button className="bg-gray-300 mt-18.5 py-4 px-5">
+            SEE MY WORK {">"}
+          </button>
+        </div>
+        <div className="relative w-184.25 ml-18.25 mt-24">
+          <Polaroid
+            src={pictureOfMe}
+            text="me"
+            imgAlt="ref"
+            className="-rotate-12"
+            imgClassName="w-[300px] h-[300px]"
+          />
+          <Polaroid
+            src={highlightedProjectImg}
+            text="Site JSP de France"
+            imgAlt="ref"
+            className="absolute rotate-14 top-36 left-70.5 hover:scale-110 transition cursor-pointer"
+            imgClassName="w-[300px] h-[300px]"
+          />
+        </div>
       </div>
       {/* <div
         className="ellipse-debug"
