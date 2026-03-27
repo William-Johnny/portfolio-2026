@@ -19,7 +19,9 @@ const Polaroid: React.FC<PolaroidProps> = ({
   imgClassName,
 }) => {
   return (
-    <div className={cn("box bg-white p-4 pb-10 shadow-xl max-w-83", className)}>
+    <div
+      className={cn("box bg-white p-4 pb-10 shadow-xl max-w-fit", className)}
+    >
       <PrismicNextImage
         field={src}
         className={cn("w-64 h-64", imgClassName)}

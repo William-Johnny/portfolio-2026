@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import Polaroid from "../components/polaroid";
 import { ImageFieldImage } from "@prismicio/client";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 
 gsap.registerPlugin(Draggable, InertiaPlugin, ScrollTrigger);
 
@@ -21,6 +22,8 @@ const PresPage: React.FC<PresPageProps> = ({
   pictureOfMe,
   highlightedProjectImg,
 }) => {
+  const [goToProjects, setGoToProjects] = useState<boolean>(false);
+
   function isInsideEllipse(
     x: number,
     y: number,
@@ -35,50 +38,6 @@ const PresPage: React.FC<PresPageProps> = ({
     return (dx * dx) / (a * a) + (dy * dy) / (b * b) < 1;
   }
 
-  function generatePositions(
-    count: number,
-    centerX: number,
-    centerY: number,
-    a: number,
-    b: number,
-  ) {
-    const positions: { x: number; y: number }[] = [];
-    const padding = 80;
-
-    function isFarEnough(
-      x: number,
-      y: number,
-      positions: { x: number; y: number }[],
-      minDist = 200,
-    ) {
-      return positions.every((p) => {
-        const dx = p.x - x;
-        const dy = p.y - y;
-        return Math.sqrt(dx * dx + dy * dy) > minDist;
-      });
-    }
-
-    while (positions.length < count) {
-      const x = Math.random() * window.innerWidth;
-      const y = Math.random() * window.innerHeight;
-
-      const inside = isInsideEllipse(
-        x,
-        y,
-        centerX,
-        centerY,
-        a + padding,
-        b + padding,
-      );
-
-      if (!inside && isFarEnough(x, y, positions)) {
-        positions.push({ x, y });
-      }
-    }
-
-    return positions;
-  }
-
   function getNearestEdge(el: HTMLElement) {
     const rect = el.getBoundingClientRect();
 
@@ -86,7 +45,6 @@ const PresPage: React.FC<PresPageProps> = ({
       left: rect.left,
       right: window.innerWidth - rect.right,
       top: rect.top,
-      bottom: window.innerHeight - rect.bottom,
     };
 
     const nearest = Object.entries(distances).reduce((a, b) =>
@@ -96,38 +54,55 @@ const PresPage: React.FC<PresPageProps> = ({
     return nearest;
   }
 
-  function moveToEdge(el: HTMLElement) {
-    const edge = getNearestEdge(el);
+  useEffect(() => {
+    new Lenis({
+      autoRaf: true,
+    });
 
-    const offset = 200; // how far outside screen
+    function generatePositions(
+      count: number,
+      centerX: number,
+      centerY: number,
+      a: number,
+      b: number,
+    ) {
+      const positions: { x: number; y: number }[] = [];
+      const padding = 80;
 
-    let x = 0;
-    let y = 0;
+      function isFarEnough(
+        x: number,
+        y: number,
+        positions: { x: number; y: number }[],
+        minDist = 200,
+      ) {
+        return positions.every((p) => {
+          const dx = p.x - x;
+          const dy = p.y - y;
+          return Math.sqrt(dx * dx + dy * dy) > minDist;
+        });
+      }
 
-    switch (edge) {
-      case "left":
-        x = -window.innerWidth / 2 - offset;
-        break;
-      case "right":
-        x = window.innerWidth / 2 + offset;
-        break;
-      case "top":
-        y = -window.innerHeight / 2 - offset;
-        break;
-      case "bottom":
-        y = window.innerHeight / 2 + offset;
-        break;
+      while (positions.length < count) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+
+        const inside = isInsideEllipse(
+          x,
+          y,
+          centerX,
+          centerY,
+          a + padding,
+          b + padding,
+        );
+
+        if (!inside && isFarEnough(x, y, positions)) {
+          positions.push({ x, y });
+        }
+      }
+
+      return positions;
     }
 
-    gsap.to(el, {
-      x: `+=${x}`,
-      y: `+=${y}`,
-      duration: 0.8,
-      ease: "power3.out",
-    });
-  }
-
-  useEffect(() => {
     const elements = document.getElementsByClassName(
       "polaroid",
     ) as HTMLCollectionOf<HTMLElement>;
@@ -193,19 +168,34 @@ const PresPage: React.FC<PresPageProps> = ({
       },
     });
 
-    gsap.to(".home-title", {
-      opacity: 0,
-      y: -50,
-      duration: 1,
+    const heroTl = gsap.timeline({
       scrollTrigger: {
         trigger: ".home-title",
         markers: true,
         start: "-=300",
-        end: "bottom top",
+        end: "+=2000",
         scrub: true,
-        pin: true,
       },
     });
+
+    heroTl
+      .to(".home-title", {
+        opacity: 0,
+        y: 500,
+        duration: 1,
+      })
+      .fromTo(
+        ".highlightProject",
+        { x: 1100, y: 20, rotate: 14, zIndex: 9999 },
+        {
+          x: 900,
+          y: 1800,
+          duration: 1.2,
+          ease: "power1.out",
+          zIndex: 9999,
+        },
+        0,
+      );
 
     els.forEach((el) => {
       const edge = getNearestEdge(el);
@@ -218,18 +208,22 @@ const PresPage: React.FC<PresPageProps> = ({
       if (edge === "left") x = -offset;
       if (edge === "right") x = offset;
       if (edge === "top") y = -offset;
-      if (edge === "bottom") y = offset;
 
-      gsap.to(el, {
-        x: `+=${x}`,
-        y: `+=${y}`,
-        scrollTrigger: {
-          trigger: document.body,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
+      gsap.fromTo(
+        el,
+        { zIndex: 8888 },
+        {
+          x: `+=${x}`,
+          y: `${y}`,
+          zIndex: 9999,
+          scrollTrigger: {
+            trigger: document.body,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
         },
-      });
+      );
     });
   }, []);
 
@@ -243,21 +237,52 @@ const PresPage: React.FC<PresPageProps> = ({
           className="polaroid"
         />
       ))}
+      <div className="highlightProject absolute rotate-14">
+        <div className="hover:scale-110 transition cursor-pointer">
+          <Polaroid
+            src={highlightedProjectImg}
+            text="Site JSP de France"
+            imgAlt="ref"
+            imgClassName="w-[300px] h-[300px]"
+          />
+        </div>
+      </div>
       <div className="min-h-full w-full flex justify-center items-center">
         <h1 className="home-title font-bebas text-[200px]">Portfolio</h1>
       </div>
-      <div className="min-h-full w-full flex mt-[500px]">
-        <div className=".hero-subtitle pt-11 pl-36">
+      <div className="min-h-full w-full flex mt-125">
+        <div className="hero-subtitle pt-11 pl-36">
           <h1 className="font-bebas text-8xl">Who am I ?</h1>
           <p className="font-sans text-2xl w-108.75">
             My name is William-John Guenon I’m a student developer at l’Ecole by
             CCI
           </p>
-          <button className="bg-gray-300 mt-18.5 py-4 px-5">
-            SEE MY WORK {">"}
-          </button>
+          <div className="flex flex-col gap-3.5 mt-18.5 w-42.5">
+            <button
+              onClick={() => {
+                setGoToProjects(true);
+              }}
+              className="bg-gray-300 py-4 px-5 cursor-pointer"
+            >
+              SEE MY WORK {">"}
+            </button>
+            {/* <button className="bg-gray-300 py-4 px-5 cursor-pointer">
+              CONTACT ME {">"}
+            </button> */}
+          </div>
         </div>
-        <div className="relative w-184.25 ml-18.25 mt-24">
+        <div className="mainPolaroidDiv relative w-184.25 ml-18.25 mt-24">
+          <Polaroid
+            src={pictureOfMe}
+            text="me"
+            imgAlt="ref"
+            className="-rotate-12"
+            imgClassName="mainPolaroid w-[300px] h-[300px]"
+          />
+        </div>
+      </div>
+      <div className="flex w-full gap-15.5 justify-center">
+        <div>
           <Polaroid
             src={pictureOfMe}
             text="me"
@@ -269,7 +294,33 @@ const PresPage: React.FC<PresPageProps> = ({
             src={highlightedProjectImg}
             text="Site JSP de France"
             imgAlt="ref"
-            className="absolute rotate-14 top-36 left-70.5 hover:scale-110 transition cursor-pointer"
+            className="absolute rotate-14 top-19 left-65.5 hover:scale-110 transition cursor-pointer"
+            imgClassName="w-[300px] h-[300px]"
+          />
+        </div>
+        <div>
+          <h2 className="font-bebas text-[64px]">Project 1</h2>
+          <p className="text-[20px]">This is a project.</p>
+        </div>
+      </div>
+      <div className="flex w-full gap-15.5 justify-center mt-32">
+        <div>
+          <h2 className="font-bebas text-[64px]">Project 1</h2>
+          <p className="text-[20px]">This is a project.</p>
+        </div>
+        <div>
+          <Polaroid
+            src={pictureOfMe}
+            text="me"
+            imgAlt="ref"
+            className="-rotate-12"
+            imgClassName="w-[300px] h-[300px]"
+          />
+          <Polaroid
+            src={highlightedProjectImg}
+            text="Site JSP de France"
+            imgAlt="ref"
+            className="absolute rotate-14 top-19 left-65.5 hover:scale-110 transition cursor-pointer"
             imgClassName="w-[300px] h-[300px]"
           />
         </div>

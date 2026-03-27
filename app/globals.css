@@ -40,4 +40,5 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   height: 100%;
+  overflow-x: hidden;
 }

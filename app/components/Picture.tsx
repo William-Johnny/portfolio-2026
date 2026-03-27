@@ -1,6 +1,4 @@
-
 /* eslint-disable @next/next/no-img-element -- any */
-'use-client';
 
 import {
   useEffect,
@@ -9,8 +7,8 @@ import {
   type CSSProperties,
   type MouseEvent,
   type MouseEventHandler,
-} from 'react';
-import { cn } from '../lib/cn';
+} from "react";
+import { cn } from "../lib/cn";
 
 export type PictureProps = {
   alt?: string;
@@ -18,7 +16,7 @@ export type PictureProps = {
   className?: string;
   imageClassName?: string;
   sail?: boolean;
-  fetchPriority?: 'high' | 'low';
+  fetchPriority?: "high" | "low";
   style?: CSSProperties;
   preloaded?: boolean;
   onClick?: MouseEventHandler<HTMLPictureElement>;
@@ -27,10 +25,10 @@ export type PictureProps = {
 const Picture: React.FC<PictureProps> = ({
   url,
   alt,
-  className = '',
-  imageClassName = '',
+  className = "",
+  imageClassName = "",
   sail = false,
-  fetchPriority = 'high',
+  fetchPriority = "high",
   style,
   preloaded = false,
   onClick,
@@ -54,7 +52,7 @@ const Picture: React.FC<PictureProps> = ({
       },
       {
         root: null,
-        rootMargin: '0px 0px 500px 0px',
+        rootMargin: "0px 0px 500px 0px",
         threshold: 0,
       },
     );
@@ -79,9 +77,9 @@ const Picture: React.FC<PictureProps> = ({
     <div
       ref={ref}
       className={cn(
-        'relative block',
+        "relative block",
         {
-          'after:absolute after:left-0 after:top-0 after:z-2 after:size-full after:bg-black after:opacity-20 after:content-empty':
+          "after:absolute after:left-0 after:top-0 after:z-2 after:size-full after:bg-black after:opacity-20 after:content-empty":
             sail,
         },
         className,
@@ -93,10 +91,10 @@ const Picture: React.FC<PictureProps> = ({
         src={`${url}?w=10&q=10&fm=webp`}
         alt="thumbnail"
         className={cn(
-          'ease-power2-out absolute inset-0 size-full object-cover object-center transition-opacity duration-150',
+          "ease-power2-out absolute inset-0 size-full object-cover object-center transition-opacity duration-150",
           {
-            'opacity-0': !isLoading,
-            'opacity-100': isLoading,
+            "opacity-0": !isLoading,
+            "opacity-100": isLoading,
           },
           imageClassName,
         )}
@@ -107,10 +105,10 @@ const Picture: React.FC<PictureProps> = ({
         src={isIntersecting ? `${url}?fm=webp` : undefined}
         alt={alt}
         className={cn(
-          'ease-power2-out absolute inset-0 size-full object-cover object-center transition-opacity duration-150',
+          "ease-power2-out absolute inset-0 size-full object-cover object-center transition-opacity duration-150",
           {
-            'opacity-0': isLoading,
-            'opacity-100': !isLoading,
+            "opacity-0": isLoading,
+            "opacity-100": !isLoading,
           },
           imageClassName,
         )}
