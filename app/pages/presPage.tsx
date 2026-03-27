@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { Draggable } from "gsap/Draggable";
 import { InertiaPlugin } from "gsap/InertiaPlugin";
 import Polaroid from "../components/polaroid";
+import { Button } from "../components/Button";
 import { ImageFieldImage } from "@prismicio/client";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -22,8 +23,6 @@ const PresPage: React.FC<PresPageProps> = ({
   pictureOfMe,
   highlightedProjectImg,
 }) => {
-  const [goToProjects, setGoToProjects] = useState<boolean>(false);
-
   function isInsideEllipse(
     x: number,
     y: number,
@@ -173,7 +172,7 @@ const PresPage: React.FC<PresPageProps> = ({
         trigger: ".home-title",
         markers: true,
         start: "-=300",
-        end: "+=2000",
+        end: "+=1500",
         scrub: true,
       },
     });
@@ -189,7 +188,7 @@ const PresPage: React.FC<PresPageProps> = ({
         { x: 1100, y: 20, rotate: 14, zIndex: 9999 },
         {
           x: 900,
-          y: 1800,
+          y: 1700,
           duration: 1.2,
           ease: "power1.out",
           zIndex: 9999,
@@ -258,14 +257,7 @@ const PresPage: React.FC<PresPageProps> = ({
             CCI
           </p>
           <div className="flex flex-col gap-3.5 mt-18.5 w-42.5">
-            <button
-              onClick={() => {
-                setGoToProjects(true);
-              }}
-              className="bg-gray-300 py-4 px-5 cursor-pointer"
-            >
-              SEE MY WORK {">"}
-            </button>
+            <Button push="en/projects">SEE MY WORK {">"}</Button>
             {/* <button className="bg-gray-300 py-4 px-5 cursor-pointer">
               CONTACT ME {">"}
             </button> */}
@@ -294,7 +286,7 @@ const PresPage: React.FC<PresPageProps> = ({
             src={highlightedProjectImg}
             text="Site JSP de France"
             imgAlt="ref"
-            className="absolute rotate-14 top-19 left-65.5 hover:scale-110 transition cursor-pointer"
+            className="rotate-14 hover:scale-110 transition cursor-pointer"
             imgClassName="w-[300px] h-[300px]"
           />
         </div>
@@ -320,7 +312,7 @@ const PresPage: React.FC<PresPageProps> = ({
             src={highlightedProjectImg}
             text="Site JSP de France"
             imgAlt="ref"
-            className="absolute rotate-14 top-19 left-65.5 hover:scale-110 transition cursor-pointer"
+            className="rotate-14 hover:scale-110 transition cursor-pointer"
             imgClassName="w-[300px] h-[300px]"
           />
         </div>

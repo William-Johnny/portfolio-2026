@@ -6,8 +6,8 @@ import { PrismicRichText, SliceZone } from "@prismicio/react";
 import { createClient } from "@/prismicio";
 import { components } from "@/slices";
 import { isFilled } from "@prismicio/client";
-import { Anim } from "./components/anim";
-import PresPage from "./pages/presPage";
+import { Anim } from "../components/anim";
+import PresPage from "../pages/presPage";
 
 // export default async function Page() {
 //   const client = createClient();
