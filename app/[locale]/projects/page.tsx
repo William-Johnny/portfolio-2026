@@ -1,13 +1,27 @@
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { asImageSrc } from "@prismicio/client";
+import ProjectItem from "../../components/projectItem";
 
 import { createClient } from "@/prismicio";
 
 export default async function ProjectList() {
+  const client = createClient();
+  const project: any = await client
+    .getSingle("project")
+    .catch(() => notFound());
   return (
     <>
-      <p>list of project</p>
+      {project.data.project.map((proj: any, index: number) => (
+        <ProjectItem
+          key={index}
+          src={proj.mainimg}
+          src2={proj.secondaryimg}
+          title={proj.title}
+          description={proj.description[0].text}
+          index={index}
+        />
+      ))}
     </>
   );
 }

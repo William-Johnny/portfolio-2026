@@ -273,50 +273,6 @@ const PresPage: React.FC<PresPageProps> = ({
           />
         </div>
       </div>
-      <div className="flex w-full gap-15.5 justify-center">
-        <div>
-          <Polaroid
-            src={pictureOfMe}
-            text="me"
-            imgAlt="ref"
-            className="-rotate-12"
-            imgClassName="w-[300px] h-[300px]"
-          />
-          <Polaroid
-            src={highlightedProjectImg}
-            text="Site JSP de France"
-            imgAlt="ref"
-            className="rotate-14 hover:scale-110 transition cursor-pointer"
-            imgClassName="w-[300px] h-[300px]"
-          />
-        </div>
-        <div>
-          <h2 className="font-bebas text-[64px]">Project 1</h2>
-          <p className="text-[20px]">This is a project.</p>
-        </div>
-      </div>
-      <div className="flex w-full gap-15.5 justify-center mt-32">
-        <div>
-          <h2 className="font-bebas text-[64px]">Project 1</h2>
-          <p className="text-[20px]">This is a project.</p>
-        </div>
-        <div>
-          <Polaroid
-            src={pictureOfMe}
-            text="me"
-            imgAlt="ref"
-            className="-rotate-12"
-            imgClassName="w-[300px] h-[300px]"
-          />
-          <Polaroid
-            src={highlightedProjectImg}
-            text="Site JSP de France"
-            imgAlt="ref"
-            className="rotate-14 hover:scale-110 transition cursor-pointer"
-            imgClassName="w-[300px] h-[300px]"
-          />
-        </div>
-      </div>
     </>
   );
 };
