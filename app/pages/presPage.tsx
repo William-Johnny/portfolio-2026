@@ -156,17 +156,6 @@ const PresPage: React.FC<PresPageProps> = ({
 
     const margin = 25;
 
-    Draggable.create(els, {
-      type: "x,y",
-      inertia: true,
-      bounds: {
-        minX: -margin,
-        minY: -margin,
-        maxX: window.innerWidth + margin,
-        maxY: window.innerHeight + margin,
-      },
-    });
-
     const heroTl = gsap.timeline({
       scrollTrigger: {
         trigger: ".home-title",
@@ -196,33 +185,54 @@ const PresPage: React.FC<PresPageProps> = ({
         0,
       );
 
+    const scrollTweens: gsap.core.Tween[] = [];
+
     els.forEach((el) => {
       const edge = getNearestEdge(el);
 
-      let x = 0;
-      let y = 0;
+      let moveX = 0;
+      let moveY = 0;
 
       const offset = 300;
 
-      if (edge === "left") x = -offset;
-      if (edge === "right") x = offset;
-      if (edge === "top") y = -offset;
+      if (edge === "left") moveX = -offset;
+      if (edge === "right") moveX = offset;
+      if (edge === "top") moveY = -offset;
 
-      gsap.fromTo(
-        el,
-        { zIndex: 8888 },
-        {
-          x: `+=${x}`,
-          y: `${y}`,
-          zIndex: 9999,
-          scrollTrigger: {
-            trigger: document.body,
-            start: "top top",
-            end: "bottom top",
-            scrub: true,
-          },
+      const tween = gsap.to(el, {
+        x: `+=${moveX}`,
+        y: `+=${moveY}`,
+        ease: "none",
+        paused: true,
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: document.body,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+          invalidateOnRefresh: true,
         },
-      );
+      });
+
+      scrollTweens.push(tween);
+    });
+
+    Draggable.create(els, {
+      type: "x,y",
+      inertia: true,
+      bounds: {
+        minX: -margin,
+        minY: -margin,
+        maxX: window.innerWidth + margin,
+        maxY: window.innerHeight + margin,
+      },
+
+      onDragEnd() {
+        scrollTweens.forEach((tween) => {
+          tween.invalidate();
+          tween.scrollTrigger?.refresh();
+        });
+      },
     });
   }, []);
 
