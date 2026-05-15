@@ -77,8 +77,8 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
                 />
             </div>
             <div className="max-w-125">
-                <h2 className="font-bebas text-[64px]">{title}</h2>
-                <p className="text-[20px]">{description}</p>
+                <h2 className="font-bebas text-[64px] leading-none">{title}</h2>
+                <p className="text-[20px] max-w-125 line-clamp-2">{description}</p>
             </div>
             </>
         )}
