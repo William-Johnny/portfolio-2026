@@ -54,186 +54,194 @@ const PresPage: React.FC<PresPageProps> = ({
   }
 
   useEffect(() => {
-    new Lenis({
+    const lenis = new Lenis({
       autoRaf: true,
     });
 
-    function generatePositions(
-      count: number,
-      centerX: number,
-      centerY: number,
-      a: number,
-      b: number,
-    ) {
-      const positions: { x: number; y: number }[] = [];
-      const padding = 80;
-
-      function isFarEnough(
-        x: number,
-        y: number,
-        positions: { x: number; y: number }[],
-        minDist = 200,
+    const ctx = gsap.context(() => {
+      function generatePositions(
+        count: number,
+        centerX: number,
+        centerY: number,
+        a: number,
+        b: number,
       ) {
-        return positions.every((p) => {
-          const dx = p.x - x;
-          const dy = p.y - y;
-          return Math.sqrt(dx * dx + dy * dy) > minDist;
-        });
-      }
-
-      while (positions.length < count) {
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
-
-        const inside = isInsideEllipse(
-          x,
-          y,
-          centerX,
-          centerY,
-          a + padding,
-          b + padding,
-        );
-
-        if (!inside && isFarEnough(x, y, positions)) {
-          positions.push({ x, y });
+        const positions: { x: number; y: number }[] = [];
+        const padding = 80;
+  
+        function isFarEnough(
+          x: number,
+          y: number,
+          positions: { x: number; y: number }[],
+          minDist = 200,
+        ) {
+          return positions.every((p) => {
+            const dx = p.x - x;
+            const dy = p.y - y;
+            return Math.sqrt(dx * dx + dy * dy) > minDist;
+          });
         }
+  
+        while (positions.length < count) {
+          const x = Math.random() * window.innerWidth;
+          const y = Math.random() * window.innerHeight;
+  
+          const inside = isInsideEllipse(
+            x,
+            y,
+            centerX,
+            centerY,
+            a + padding,
+            b + padding,
+          );
+  
+          if (!inside && isFarEnough(x, y, positions)) {
+            positions.push({ x, y });
+          }
+        }
+  
+        return positions;
       }
-
-      return positions;
-    }
-
-    const elements = document.getElementsByClassName(
-      "polaroid",
-    ) as HTMLCollectionOf<HTMLElement>;
-
-    const ele = document.getElementsByClassName(
-      "point",
-    ) as HTMLCollectionOf<HTMLElement>;
-
-    const els = Array.from(elements);
-    const points = Array.from(ele);
-
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    const centerX = width / 2;
-    const centerY = height / 2;
-
-    const a = 705 / 2;
-    const b = 173 / 2;
-
-    const positions = generatePositions(els.length, centerX, centerY, a, b);
-
-    els.forEach((el, i) => {
-      const p = positions[i];
-
-      const rotation = gsap.utils.random(-45, 45);
-
-      gsap.set(el, {
-        position: "absolute",
-        x: p.x,
-        y: p.y,
-        rotation,
-        xPercent: -50,
-        yPercent: -50,
-      });
-    });
-
-    points.forEach((el, i) => {
-      const p = positions[i];
-
-      const rotation = gsap.utils.random(-45, 45);
-
-      gsap.set(el, {
-        position: "absolute",
-        x: p.x,
-        y: p.y,
-        rotation,
-        xPercent: -50,
-        yPercent: -50,
-      });
-    });
-
-    const margin = 25;
-
-    const heroTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".home-title",
-        markers: true,
-        start: "-=300",
-        end: "+=1500",
-        scrub: true,
-      },
-    });
-
-    heroTl
-      .to(".home-title", {
-        opacity: 0,
-        y: 500,
-        duration: 1,
-      })
-      .fromTo(
-        ".highlightProject",
-        { x: 1100, y: 20, rotate: 14, zIndex: 9999 },
-        {
-          x: 900,
-          y: 1700,
-          duration: 1.2,
-          ease: "power1.out",
-          zIndex: 9999,
-        },
-        0,
-      );
-
-    const scrollTweens: gsap.core.Tween[] = [];
-
-    els.forEach((el) => {
-      const edge = getNearestEdge(el);
-
-      let moveX = 0;
-      let moveY = 0;
-
-      const offset = 300;
-
-      if (edge === "left") moveX = -offset;
-      if (edge === "right") moveX = offset;
-      if (edge === "top") moveY = -offset;
-
-      const tween = gsap.to(el, {
-        x: `+=${moveX}`,
-        y: `+=${moveY}`,
-        ease: "none",
-        paused: true,
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: document.body,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      scrollTweens.push(tween);
-    });
-
-    Draggable.create(els, {
-      type: "x,y",
-      inertia: true,
-      bounds: {
-        minX: -margin,
-        minY: -margin,
-        maxX: window.innerWidth + margin,
-        maxY: window.innerHeight + margin,
-      },
-
-      onDragEnd() {
-        scrollTweens.forEach((tween) => {
-          tween.invalidate();
-          tween.scrollTrigger?.refresh();
+  
+      const elements = document.getElementsByClassName(
+        "polaroid",
+      ) as HTMLCollectionOf<HTMLElement>;
+  
+      const ele = document.getElementsByClassName(
+        "point",
+      ) as HTMLCollectionOf<HTMLElement>;
+  
+      const els = Array.from(elements);
+      const points = Array.from(ele);
+  
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+  
+      const centerX = width / 2;
+      const centerY = height / 2;
+  
+      const a = 705 / 2;
+      const b = 173 / 2;
+  
+      const positions = generatePositions(els.length, centerX, centerY, a, b);
+  
+      els.forEach((el, i) => {
+        const p = positions[i];
+  
+        const rotation = gsap.utils.random(-45, 45);
+  
+        gsap.set(el, {
+          position: "absolute",
+          x: p.x,
+          y: p.y,
+          rotation,
+          xPercent: -50,
+          yPercent: -50,
         });
-      },
+      });
+  
+      points.forEach((el, i) => {
+        const p = positions[i];
+  
+        const rotation = gsap.utils.random(-45, 45);
+  
+        gsap.set(el, {
+          position: "absolute",
+          x: p.x,
+          y: p.y,
+          rotation,
+          xPercent: -50,
+          yPercent: -50,
+        });
+      });
+  
+      const margin = 25;
+  
+      const heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".home-title",
+          markers: true,
+          start: "-=300",
+          end: "+=1500",
+          scrub: true,
+        },
+      });
+  
+      heroTl
+        .to(".home-title", {
+          opacity: 0,
+          y: 500,
+          duration: 1,
+        })
+        .fromTo(
+          ".highlightProject",
+          { x: 1100, y: 20, rotate: 14, zIndex: 9999 },
+          {
+            x: 900,
+            y: 1700,
+            duration: 1.2,
+            ease: "power1.out",
+            zIndex: 9999,
+          },
+          0,
+        );
+  
+      const scrollTweens: gsap.core.Tween[] = [];
+  
+      els.forEach((el) => {
+        const edge = getNearestEdge(el);
+  
+        let moveX = 0;
+        let moveY = 0;
+  
+        const offset = 300;
+  
+        if (edge === "left") moveX = -offset;
+        if (edge === "right") moveX = offset;
+        if (edge === "top") moveY = -offset;
+  
+        const tween = gsap.to(el, {
+          x: `+=${moveX}`,
+          y: `+=${moveY}`,
+          ease: "none",
+          paused: true,
+          immediateRender: false,
+          scrollTrigger: {
+            trigger: document.body,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
+  
+        scrollTweens.push(tween);
+      });
+  
+      Draggable.create(els, {
+        type: "x,y",
+        inertia: true,
+        bounds: {
+          minX: -margin,
+          minY: -margin,
+          maxX: window.innerWidth + margin,
+          maxY: window.innerHeight + margin,
+        },
+  
+        onDragEnd() {
+          scrollTweens.forEach((tween) => {
+            tween.invalidate();
+            tween.scrollTrigger?.refresh();
+          });
+        },
+      });
     });
+
+    return () => {
+      ctx.revert();
+      lenis.destroy();
+    };
+
   }, []);
 
   return (
