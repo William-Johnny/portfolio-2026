@@ -79,7 +79,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
                     imgClassName="min-w-64 min-h-64"
                     />
                 </div>
-                <div className="max-w-125">
+                <div className="max-w-162.5">
                     <h2 className="font-bebas text-[64px] leading-none">{title}</h2>
                     <p className="text-[20px] max-w-125 line-clamp-2">{description}</p>
                 </div>
