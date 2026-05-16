@@ -254,16 +254,18 @@ const PresPage: React.FC<PresPageProps> = ({
           className="polaroid"
         />
       ))}
-      <div className="highlightProject absolute rotate-14">
-        <div className="hover:scale-110 transition cursor-pointer">
-          <Polaroid
-            src={highlightedProjectImg}
-            text="Site JSP de France"
-            imgAlt="ref"
-            imgClassName="w-[300px] h-[300px]"
-          />
+      <a href="en/project/jsp-de-france">
+        <div className="highlightProject absolute rotate-14">
+          <div className="hover:scale-110 transition cursor-pointer">
+            <Polaroid
+              src={highlightedProjectImg}
+              text="Site JSP de France"
+              imgAlt="ref"
+              imgClassName="w-[300px] h-[300px]"
+            />
+          </div>
         </div>
-      </div>
+      </a>
       <div className="min-h-full w-full flex justify-center items-center">
         <h1 className="home-title font-bebas text-[200px]">Portfolio</h1>
       </div>
