@@ -7,19 +7,21 @@ import { createClient } from "@/prismicio";
 
 export default async function ProjectList() {
   const client = createClient();
-  const project: any = await client
-    .getSingle("project")
+  const projects: any = await client
+    .getByType("project_item")
     .catch(() => notFound());
+  console.log(projects);
   return (
     <>
-      {project.data.project.map((proj: any, index: number) => (
+      {projects.results.map((proj: any, index: number) => (
         <ProjectItem
           key={index}
-          src={proj.mainimg}
-          src2={proj.secondaryimg}
-          title={proj.title}
-          description={proj.description[0].text}
+          src={proj.data.main_image}
+          src2={proj.data.secondary_image}
+          title={proj.data.name}
+          description={proj.data.description[0].text}
           index={index}
+          slug={proj.uid}
         />
       ))}
     </>
