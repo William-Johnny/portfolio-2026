@@ -21,7 +21,8 @@ const Project: React.FC<ProjectProps> = ({
       <div>
         <Polaroid
           src={src}
-          className="h-full min-w-147.5"
+          className="h-full w-147.5 max-w-147.5"
+          imgClassName="h-full w-full object-cover"
         />
       </div>
       <div className="ml-40">

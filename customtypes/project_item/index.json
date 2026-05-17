@@ -33,8 +33,8 @@
         "config": {
           "label": "Main Image",
           "constraint": {
-            "width": 488,
-            "height": 538
+            "width": 2400,
+            "height": 1260
           },
           "thumbnails": []
         }

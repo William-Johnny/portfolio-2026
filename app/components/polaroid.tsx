@@ -20,16 +20,18 @@ const Polaroid: React.FC<PolaroidProps> = ({
 }) => {
   return (
     <div
-      className={cn("box bg-white p-4 pb-10 shadow-xl max-w-fit", className)}
+      className={cn("box bg-white p-4 shadow-xl max-w-fit", `${text? "pb-[10%]": "pb-[20%]"}`, className)}
     >
       <PrismicNextImage
         field={src}
-        className={cn("w-64 h-64", imgClassName)}
+        className={cn("w-64 h-64 object-cover", imgClassName)}
         alt=""
       />
-      <p className="text-center mt-4 text-gray-700 font-medium font-caveat">
-        {text}
-      </p>
+      {text && (
+        <p className="text-center mt-4 text-gray-700 font-medium font-caveat">
+          {text}
+        </p>
+      )}
     </div>
   );
 };
