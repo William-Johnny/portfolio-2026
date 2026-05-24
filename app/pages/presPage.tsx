@@ -160,7 +160,6 @@ const PresPage: React.FC<PresPageProps> = ({
       const heroTl = gsap.timeline({
         scrollTrigger: {
           trigger: ".home-title",
-          markers: true,
           start: "-=300",
           end: "+=1500",
           scrub: true,
