@@ -2,6 +2,7 @@
 
 import { ImageFieldImage } from "@prismicio/client";
 import Polaroid from "./polaroid";
+import BackBtn from "./BackBtn";
 
 interface ProjectProps {
   src: ImageFieldImage;
@@ -19,6 +20,7 @@ const Project: React.FC<ProjectProps> = ({
   return (
     <div className="flex h-full p-6">
       <div>
+        <BackBtn className="mb-5"/>
         <Polaroid
           src={src}
           className="h-full w-147.5 max-w-147.5"

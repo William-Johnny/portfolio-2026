@@ -4,6 +4,7 @@ import { asImageSrc } from "@prismicio/client";
 import ProjectItem from "../../components/projectItem";
 
 import { createClient } from "@/prismicio";
+import BackBtn from "@/app/components/BackBtn";
 
 export default async function ProjectList() {
   const client = createClient();
@@ -13,6 +14,7 @@ export default async function ProjectList() {
   console.log(projects);
   return (
     <>
+      <BackBtn className="m-6 mb-0 fixed"/>
       {projects.results.map((proj: any, index: number) => (
         <ProjectItem
           key={index}
